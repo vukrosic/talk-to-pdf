@@ -4,11 +4,18 @@ from PyPDF2 import PdfReader
 import pinecone
 import openai
 from langchain.embeddings.openai import OpenAIEmbeddings
+from dotenv import load_dotenv
+
+# Load the environment variables from .env file
+load_dotenv()
+
+# Access the API key using the environment variable name
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEYY")
 
 # Initialize Pinecone
 def initialize_pinecone():
-    PINECONE_API_KEY = '52865541-2519-4196-8238-17f33a89296d'
-    PINECONE_API_ENV = 'asia-southeast1-gcp-free'
+    PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+    PINECONE_API_ENV = os.getenv("PINECONE_API_ENV")
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
     return pinecone
 
@@ -17,7 +24,6 @@ def upload_data_to_pinecone(texts, index_name):
     # Initialize Pinecone
     pinecone = initialize_pinecone()
     # Initialize Langchain embeddings
-    OPENAI_API_KEY = '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'
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     # Convert and upload data as tuples (ID, vector)
     data_to_upload = [(str(i), embeddings.embed_query(text)) for i, text in enumerate(texts)]
@@ -31,7 +37,6 @@ def upload_data_to_pinecone(texts, index_name):
 # Answer questions based on data in Pinecone
 def answer_question(question, index_name, texts):
     # Initialize Langchain embeddings
-    OPENAI_API_KEY = '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'
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 
     # Convert the user's question into an embedding
