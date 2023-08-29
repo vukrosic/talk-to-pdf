@@ -81,7 +81,7 @@ def main():
     # Streamlit App
     st.title("PDF Text Extractor and Question Answering")
     # File Upload
-    uploaded_files = st.file_uploader("Upload a PDF file", type=["pdf"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
     pasted_text = st.text_area("And / or paste text here:", "")
 
     if st.button("Analyze Files"):
