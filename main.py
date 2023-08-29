@@ -80,9 +80,9 @@ def main():
 
     # Streamlit App
     st.title("PDF Text Extractor and Question Answering")
-
     # File Upload
     uploaded_files = st.file_uploader("Upload a PDF file", type=["pdf"], accept_multiple_files=True)
+    pasted_text = st.text_area("And / or paste text here:", "")
 
     if st.button("Analyze Files"):
         # Initialize a variable to store the extracted text
@@ -93,14 +93,10 @@ def main():
             # Iterate through each page and extract text
             for page in pdf_reader.pages:
                 extracted_text += page.extract_text()
-
+        extracted_text += pasted_text
         # Split the text into smaller chunks for embedding and Pinecone upload
         chunk_size = 1000  # You can adjust this based on your needs
         texts = [extracted_text[i:i + chunk_size] for i in range(0, len(extracted_text), chunk_size)]
-        for i, text in enumerate(texts):
-            st.subheader("-------------------------------------------------")
-            st.subheader(f"Text Chunk {i}")
-            st.write(text)
         # Upload the extracted text to Pinecone
         upload_data_to_pinecone(texts, index_name)
 
