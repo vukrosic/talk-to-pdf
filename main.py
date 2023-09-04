@@ -10,9 +10,45 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Access the API key using the environment variable name
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEYY")
-openai.api_key = OPENAI_API_KEY
+#OPENAI_API_KEY = os.getenv("OPENAI_API_KEYY")
+#openai.api_key = OPENAI_API_KEY
+#top_k = 2
+# Function to add instructions text
+
+# Initialize the global variables
+OPENAI_API_KEY = ''
+PINECONE_API_KEY = ''
+PINECONE_API_ENV = ''
 top_k = 2
+chunk_size = 1000
+
+# Function to add instructions text
+def instructions():
+    global top_k  # Declare top_k as a global variable
+    global chunk_size  # Declare chunk_size as a global variable
+    st.markdown(
+        """
+        **Instructions:**
+        1. **OpenAI API Key:** You can obtain your OpenAI API key from the OpenAI platform. [Get API Key](https://platform.openai.com/account/api-keys)
+        2. **Pinecone API Key:** You can obtain your Pinecone API key from the Pinecone console. [Get API Key](https://www.pinecone.io/)
+        3. **Pinecone Environment:** Enter the name of your Pinecone environment.
+        4. **Set 'top_k' parameter:** This parameter controls the number of results to return from Pinecone.
+        5. **GPT Prompt:** This is the default prompt. To get answers in a different language, tell it to answer in that language. Translating this prompt and uploading files in that language will make sure GPT doesn't get confused.
+        """
+    )
+    st.text("Additional options")
+    top_k = st.number_input("Set 'top_k' parameter", min_value=1, step=1, value=top_k)  # Assign the value to the global variable
+    chunk_size = st.number_input("Set 'chunk_size' parameter", min_value=100, max_value=10000, step=250, value=chunk_size)
+    st.button("Reset")
+
+# Function to add a button to toggle instructions
+def toggle_instructions_button():
+    show_instructions = st.checkbox("Show Instructions")
+    if show_instructions:
+        instructions()  # Display instructions when the checkbox is checked
+
+
+
 
 # Initialize Pinecone
 def initialize_pinecone():
@@ -76,15 +112,28 @@ def main():
     # Define your Pinecone index name
     index_name = "test"  # Replace with your desired index name
     texts = []
+    global OPENAI_API_KEY
+    global PINECONE_API_KEY
+    global PINECONE_API_ENV
     initialize_pinecone()
 
+
+
+    # Access the API keys and other user-defined parameters using text input fields
+    OPENAI_API_KEY = st.text_input("Enter your OpenAI API Key from ")
+    PINECONE_API_KEY = st.text_input("Enter your Pinecone API Key")
+    PINECONE_API_ENV = st.text_input("Enter your Pinecone Environment")
+
+    # Add the toggle button to show or hide instructions
+    toggle_instructions_button()
     # Streamlit App
-    st.title("PDF Text Extractor and Question Answering")
+    st.title("Answer questions with data from huge PDF files / text")
+
     # File Upload
     uploaded_files = st.file_uploader("Upload PDF files", type=["pdf"], accept_multiple_files=True)
     pasted_text = st.text_area("And / or paste text here:", "")
 
-    if st.button("Analyze Files"):
+    if st.button("Embed To Database"):
         # Initialize a variable to store the extracted text
         extracted_text = ""
         # Iterate through each uploaded PDF file
@@ -95,7 +144,6 @@ def main():
                 extracted_text += page.extract_text()
         extracted_text += pasted_text
         # Split the text into smaller chunks for embedding and Pinecone upload
-        chunk_size = 1000  # You can adjust this based on your needs
         texts = [extracted_text[i:i + chunk_size] for i in range(0, len(extracted_text), chunk_size)]
         # Upload the extracted text to Pinecone
         upload_data_to_pinecone(texts, index_name)
