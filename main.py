@@ -108,15 +108,16 @@ def toggle_instructions_button():
 
 # Initialize Pinecone
 def initialize_pinecone():
-    PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-    PINECONE_API_ENV = os.getenv("PINECONE_API_ENV")
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
     return pinecone
 
 
 def upload_data_to_pinecone(texts):
     # Initialize Pinecone
-    pinecone = initialize_pinecone()
+    #pinecone = initialize_pinecone()
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
     # Initialize Langchain embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     # Convert and upload data as tuples (ID, vector)
@@ -136,13 +137,18 @@ def answer_question(question):
     # Convert the user's question into an embedding
     question_embedding = embeddings.embed_query(question)
 
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
     # Search for the most similar embeddings in Pinecone
     index = pinecone.Index(PINECONE_INDEX_NAME)
-
-    try:
-        results = index.query(queries=[question_embedding], top_k=top_k, include_metadata=True)
-    except Exception as e:
-        return "Error, please try again. If this persists, contact me at vukrosic1@gmail.com"
+    print("OPENAI API KEY: " + OPENAI_API_KEY)
+    print("API KEY: " + PINECONE_API_KEY)
+    print("ENV: " + PINECONE_API_ENV)
+    print("INDEX: " + PINECONE_INDEX_NAME)
+    #try:
+    results = index.query(queries=[question_embedding], top_k=top_k, include_metadata=True)
+    #except Exception as e:
+        #print(e)
+        #return "Error, please try again. If this persists, contact me at vukrosic1@gmail.com"
     # print(str(results['results'][0]['matches']['metadata']['text']))
     # Access the matches correctly
     matches = results['results'][0]['matches']
@@ -172,7 +178,7 @@ def main():
     global PINECONE_API_KEY
     global PINECONE_API_ENV
     global PINECONE_INDEX_NAME
-    initialize_pinecone()
+    #initialize_pinecone()
 
 
 
