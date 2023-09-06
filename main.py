@@ -13,7 +13,7 @@ load_dotenv()
 OPENAI_API_KEY = ''
 PINECONE_API_KEY = ''
 PINECONE_API_ENV = ''
-PINECONE_INDEX_NAME = 'test'
+PINECONE_INDEX_NAME = ''
 top_k = 3
 chunk_size = 1000
 
