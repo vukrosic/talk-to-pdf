@@ -138,11 +138,14 @@ def answer_question(question):
 
     # Search for the most similar embeddings in Pinecone
     index = pinecone.Index(PINECONE_INDEX_NAME)
-    results = index.query(queries=[question_embedding], top_k=top_k, include_metadata=True)
+
+    try:
+        results = index.query(queries=[question_embedding], top_k=top_k, include_metadata=True)
+    except Exception as e:
+        return "Error, please try again. If this persists, contact me at vukrosic1@gmail.com"
     # print(str(results['results'][0]['matches']['metadata']['text']))
     # Access the matches correctly
     matches = results['results'][0]['matches']
-
     relevant_documents = [match['metadata']['text'] for match in matches]
 
     # Concatenate relevant documents into a single text
@@ -150,7 +153,7 @@ def answer_question(question):
 
     # Create a chat prompt with relevant documents and the user's question
     chat_prompt = f"Relevant Documents:\n{relevant_documents_text}\n\nUser Question: {question}\nAnswer:"
-
+    openai.api_key = OPENAI_API_KEY
     # Generate an answer using GPT-3.5 Turbo
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -159,8 +162,6 @@ def answer_question(question):
             {"role": "user", "content": chat_prompt}
         ]
     )
-    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    print(response.choices[0].message.content)
     answer = response.choices[0].message.content
     return answer
 

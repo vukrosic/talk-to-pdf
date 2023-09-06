@@ -1,0 +1,5 @@
+/* Change the border color of selected input fields */
+div.stTextInput.stTextInputWithLabel input:focus {
+    border-color: #FF5733; /* Change this to your desired border color */
+    box-shadow: none; /* Remove the box shadow if needed */
+}
