@@ -164,7 +164,6 @@ def main():
     global PINECONE_API_KEY
     global PINECONE_API_ENV
     global PINECONE_INDEX_NAME
-    #initialize_pinecone()
 
 
 
@@ -202,12 +201,12 @@ def main():
 
     # Streamlit App (continued)
     st.header("Ask a Question")
-    relevant_documents = ''
+    answer = ''
     # User input for question
     user_question = st.text_input("Enter your question:")
     if st.button("Get Answer"):
         # Retrieve answers from Pinecone based on the user's question
-        relevant_documents = answer_question(user_question)
-    st.write(relevant_documents)
+        answer = answer_question(user_question)
+    st.write(answer)
 if __name__ == "__main__":
     main()
