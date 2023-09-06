@@ -9,12 +9,6 @@ from dotenv import load_dotenv
 # Load the environment variables from .env file
 load_dotenv()
 
-# Access the API key using the environment variable name
-#OPENAI_API_KEY = os.getenv("OPENAI_API_KEYY")
-#openai.api_key = OPENAI_API_KEY
-#top_k = 2
-# Function to add instructions text
-
 # Initialize the global variables
 OPENAI_API_KEY = ''
 PINECONE_API_KEY = ''
@@ -106,17 +100,9 @@ def toggle_instructions_button():
 
 
 
-# Initialize Pinecone
-def initialize_pinecone():
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
-    return pinecone
-
-
 def upload_data_to_pinecone(texts):
     # Initialize Pinecone
-    #pinecone = initialize_pinecone()
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
-    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
     # Initialize Langchain embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
