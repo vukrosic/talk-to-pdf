@@ -21,6 +21,8 @@ chunk_size = 1000
 def instructions():
     global top_k  # Declare top_k as a global variable
     global chunk_size  # Declare chunk_size as a global variable
+    
+    st.video("https://youtu.be/ydW9264bfBE?si=k7gnRKEyUFmM7h6x")
     st.markdown(
         """
         **Instructions:**
