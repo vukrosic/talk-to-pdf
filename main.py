@@ -106,7 +106,7 @@ def upload_data_to_pinecone(texts):
 
     # Initialize Langchain embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-    # Convert and upload data as tuples (ID, vector)
+    # Convert and upload data as tuples (ID, vector, metadata)
     data_to_upload = [(str(i), embeddings.embed_query(text), {"text": text}) for i, text in enumerate(texts)]
     # Upload the data to Pinecone
     index = pinecone.Index(PINECONE_INDEX_NAME)
