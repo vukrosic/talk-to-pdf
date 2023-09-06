@@ -126,10 +126,7 @@ def answer_question(question):
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
     # Search for the most similar embeddings in Pinecone
     index = pinecone.Index(PINECONE_INDEX_NAME)
-    print("OPENAI API KEY: " + OPENAI_API_KEY)
-    print("API KEY: " + PINECONE_API_KEY)
-    print("ENV: " + PINECONE_API_ENV)
-    print("INDEX: " + PINECONE_INDEX_NAME)
+
     #try:
     results = index.query(queries=[question_embedding], top_k=top_k, include_metadata=True)
     #except Exception as e:
