@@ -130,14 +130,14 @@ def answer_question(question):
     index = pinecone.Index(PINECONE_INDEX_NAME)
 
     #try:
-    results = index.query(queries=[question_embedding], top_k=top_k, include_metadata=True)
+    results = index.query(vector=question_embedding, top_k=top_k, include_metadata=True)
     #except Exception as e:
         #print(e)
         #return "Error, please try again. If this persists, contact me at vukrosic1@gmail.com"
-    # print(str(results['results'][0]['matches']['metadata']['text']))
-    # Access the matches correctly
-    matches = results['results'][0]['matches']
-    relevant_documents = [match['metadata']['text'] for match in matches]
+    
+    matches = results['matches']  # Access all matches in the results
+    relevant_documents = [match['metadata']['text'] for match in matches]  # Initialize an empty list to store the relevant documents
+
 
     # Concatenate relevant documents into a single text
     relevant_documents_text = "\n\n".join(relevant_documents)
@@ -179,19 +179,21 @@ def main():
 
     # File Upload
     pasted_text = st.text_area("Paste text here:", "")
-    uploaded_files = st.file_uploader("And / or upload PDF files:", type=["pdf"], accept_multiple_files=True)
-    st.info("It's best to paste text. PDF reading is a lot slower. Use websites like https://www.pdf2go.com/pdf-to-text to convert PDF to text.")
+    #uploaded_files = st.file_uploader("And / or upload PDF files:", type=["pdf"], accept_multiple_files=True)
+    #st.info("It's best to paste text. PDF reading is a lot slower. Use websites like https://www.pdf2go.com/pdf-to-text to convert PDF to text.")
 
 
     if st.button("Embed To Database"):
         # Initialize a variable to store the extracted text
         extracted_text = ""
         # Iterate through each uploaded PDF file
-        for uploaded_file in uploaded_files:
-            pdf_reader = PdfReader(uploaded_file)
+
+        #for uploaded_file in uploaded_files:
+        #    pdf_reader = PdfReader(uploaded_file)
             # Iterate through each page and extract text
-            for page in pdf_reader.pages:
-                extracted_text += page.extract_text()
+        #    for page in pdf_reader.pages:
+        #        extracted_text += page.extract_text()
+
         extracted_text += pasted_text
         # Split the text into smaller chunks for embedding and Pinecone upload
         texts = [extracted_text[i:i + chunk_size] for i in range(0, len(extracted_text), chunk_size)]

@@ -1,7 +1,7 @@
-langchain==0.0.281
-openai==0.27.9
-pinecone_client==2.2.2
-PyPDF2==3.0.1
-python-dotenv==1.0.0
-streamlit==1.26.0
+langchain
+openai
+pinecone_client
+PyPDF2
+python-dotenv
+streamlit
 tiktoken
