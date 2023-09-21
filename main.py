@@ -46,7 +46,7 @@ def instructions():
         _This is all you need to know, continue reading for additional explanations._
 
 
-        The PDFs and text are separated into 1000 character chunks (142 - 250 words) and stored into a database. When you ask a question, it will find the top 3 most relevant chunks
+        The texts are separated into 1000 character chunks (142 - 250 words) and stored into a database. When you ask a question, it will find the top 3 most relevant chunks
         and send them to GPT-3.5 (ChatGPT) together with your question to generate the answer.
 
 
