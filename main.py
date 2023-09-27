@@ -5,6 +5,7 @@ import pinecone
 import openai
 from langchain.embeddings.openai import OpenAIEmbeddings
 from dotenv import load_dotenv
+import uuid
 
 # Load the environment variables from .env file
 load_dotenv()
@@ -102,17 +103,30 @@ def toggle_instructions_button():
 
 
 
+# def upload_data_to_pinecone(texts):
+#     # Initialize Pinecone
+#     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
+
+#     # Initialize Langchain embeddings
+#     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+#     # Convert and upload data as tuples (ID, vector, metadata)
+#     data_to_upload = [(str(i), embeddings.embed_query(text), {"text": text}) for i, text in enumerate(texts)]
+#     # Upload the data to Pinecone
+#     index = pinecone.Index(PINECONE_INDEX_NAME)
+#     index.upsert(data_to_upload)
+
 def upload_data_to_pinecone(texts):
     # Initialize Pinecone
     pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
 
     # Initialize Langchain embeddings
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+    
     # Convert and upload data as tuples (ID, vector, metadata)
-    data_to_upload = [(str(i), embeddings.embed_query(text), {"text": text}) for i, text in enumerate(texts)]
+    data_to_upload = [(str(uuid.uuid4()), embeddings.embed_query(text), {"text": text}) for text in texts]
+    
     # Upload the data to Pinecone
     index = pinecone.Index(PINECONE_INDEX_NAME)
-    index.delete(delete_all=True)
     index.upsert(data_to_upload)
 
 
@@ -145,6 +159,7 @@ def answer_question(question):
     # Create a chat prompt with relevant documents and the user's question
     chat_prompt = f"Relevant Documents:\n{relevant_documents_text}\n\nUser Question: {question}\nAnswer:"
     openai.api_key = OPENAI_API_KEY
+    print(relevant_documents_text)
     # Generate an answer using GPT-3.5 Turbo
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
